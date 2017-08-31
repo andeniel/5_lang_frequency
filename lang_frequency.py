@@ -3,6 +3,8 @@ import io
 import re
 from collections import Counter
 
+LIMIT_WORDS = 10
+
 
 def load_data(file_path):
     with io.open(file_path, "r", encoding="utf8") as data_file:
@@ -10,21 +12,15 @@ def load_data(file_path):
 
 
 def get_most_frequent_words(data_text):
-    reg = re.compile(r'\W')
-    words = list(map(lambda word: reg.sub('', word), data_text.split()))
-    clear_words = list(filter(lambda word: len(word) > 2, words))
-    count_words = Counter(clear_words)
-    sorted_words = sorted(
-        count_words.items(), key=lambda word: word[1], reverse=True)
-    return sorted_words[:10]
+    words = re.findall(r'\w+', data_text.lower())
+    return Counter(words).most_common(LIMIT_WORDS)
 
 
 if __name__ == '__main__':
     aparser = argparse.ArgumentParser()
     aparser.add_argument("-f", "--file", required=True, help="Filepath")
-    args = vars(aparser.parse_args())
-    data_text = load_data(args['file'])
+    args = aparser.parse_args()
+    data_text = load_data(args.file)
     frequent_words = get_most_frequent_words(data_text)
-    print("Часто используемые слова в тексте:")
     for word in frequent_words:
         print("{}\t{}".format(*word))
