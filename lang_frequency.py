@@ -3,17 +3,15 @@ import io
 import re
 from collections import Counter
 
-LIMIT_WORDS = 10
-
 
 def load_data(file_path):
     with io.open(file_path, "r", encoding="utf8") as data_file:
         return data_file.read()
 
 
-def get_most_frequent_words(data_text):
+def get_most_frequent_words(data_text, limit_words=10):
     words = re.findall(r'\w+', data_text.lower())
-    return Counter(words).most_common(LIMIT_WORDS)
+    return Counter(words).most_common(limit_words)
 
 
 if __name__ == '__main__':
